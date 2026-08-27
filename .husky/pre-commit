@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Running pre-commit checks..."
+
+# Run type checking
+pnpm run check
+
+# Run generate types
+pnpm run generate:types
+
+# Run formatter
+pnpm run format
+
+# Run linter
+pnpm run lint
+
+# Attempt a production build
+pnpm run build
+
+echo "Pre-commit checks passed!"

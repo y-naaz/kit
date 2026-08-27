@@ -1,0 +1,81 @@
+info:
+  version: '0.1.0'
+  title: 'Kit Product Card Types Specification'
+
+types:
+  ProductImage:
+    type: object
+    description: 'A single product image'
+    required:
+      - url
+    properties:
+      url:
+        type: string
+        description: 'Image URL'
+      alt:
+        type: string
+        description: 'Image alt text'
+
+  ProductVariant:
+    type: object
+    description: 'A purchasable variant of a product'
+    required:
+      - id
+      - price
+    properties:
+      id:
+        type: string
+        description: 'Variant identifier'
+      title:
+        type: string
+        description: 'Variant title, e.g. size or color'
+      price:
+        type: string
+        description: 'Variant price'
+      sku:
+        type: string
+        description: 'Variant SKU'
+
+  Product:
+    type: object
+    description: 'Generic, platform-agnostic product shape. Consumers map their own data (Shopify, WooCommerce, custom backend, etc.) into this shape before passing it to ProductCard.'
+    required:
+      - id
+      - title
+      - images
+      - price
+    properties:
+      id:
+        type: string
+        description: 'Product identifier'
+      title:
+        type: string
+        description: 'Product title'
+      description:
+        type: string
+        description: 'Product description'
+      images:
+        type: array
+        description: 'Product images'
+        items:
+          $ref: '#/types/ProductImage'
+      price:
+        type: string
+        description: 'Product price'
+      currency:
+        type: string
+        description: 'ISO currency code, e.g. USD'
+      availability:
+        type: boolean
+        description: 'Whether the product is available for sale'
+      sku:
+        type: string
+        description: 'Product SKU'
+      vendor:
+        type: string
+        description: 'Product vendor/brand'
+      variants:
+        type: array
+        description: 'Purchasable variants of this product'
+        items:
+          $ref: '#/types/ProductVariant'
