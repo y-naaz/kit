@@ -39,7 +39,7 @@
     "format": "prettier --write .",
     "lint": "eslint .",
     "generate:types": "type-crafter generate typescript-with-decoders ./schema/product.yaml ./src/generated/types SingleFile SingleFile && pnpm run lint:fix:generated && pnpm run format:generated",
-    "package": "rm -rf src/lib/generated package && cp -R src/generated src/lib/generated && (svelte-package -o package; e=$?; rm -rf src/lib/generated; find src/generated -name '*.d.ts' -delete; exit $e)",
+    "package": "rm -rf src/lib/generated package && cp -R src/generated src/lib/generated && (svelte-package -o package; e=$?; rm -rf src/lib/generated; find src/generated -name '*.d.ts' -delete; [ $e -eq 0 ] && find package -type f \\( -name '*.js' -o -name '*.d.ts' \\) -exec sed -i '' \"s|\\.\\./generated/types|./generated/types|g\" {} +; exit $e)",
     "prepublishOnly": "pnpm package",
     "prepare": "husky",
     "changeset": "changeset",
