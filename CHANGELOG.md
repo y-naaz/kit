@@ -1,5 +1,11 @@
 # @yasmee_ogo/kit
 
+## 0.1.2
+
+### Patch Changes
+
+- 9a89537: Move `type-decoder` from devDependencies to dependencies. The generated decoder code imports it at runtime, so consumers installing the package never got it, causing a "Could not resolve 'type-decoder'" bundling error.
+
 ## 0.1.1
 
 ### Patch Changes
