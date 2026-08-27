@@ -1,6 +1,6 @@
 {
   "name": "@yasmee_ogo/kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "repository": {
     "type": "git",
@@ -47,7 +47,6 @@
     "release": "pnpm package && changeset publish"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^1.0.0",
     "@changesets/cli": "^3.0.1",
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
