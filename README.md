@@ -68,10 +68,14 @@ pnpm package  # build the publishable package into ./package
 
 ## Usage
 
+```bash
+npm install @y-naaz/kit
+```
+
 ```svelte
 <script lang="ts">
-  import { ProductCard } from 'kit';
-  import type { Product } from 'kit';
+  import { ProductCard } from '@y-naaz/kit';
+  import type { Product } from '@y-naaz/kit';
 
   const product: Product = {
     id: '1',
@@ -133,6 +137,20 @@ committed; only `.d.ts` build output is gitignored.
 | `pnpm lint`              | Run ESLint                                |
 | `pnpm format`            | Run Prettier                              |
 | `pnpm run generate:types`| Regenerate types from `schema/product.yaml` |
+
+## Releasing
+
+Versioning and publishing to npm are handled by [Changesets](https://github.com/changesets/changesets).
+
+1. On your feature branch, run `pnpm changeset` and describe your change — this writes a
+   markdown file under `.changeset/`. Commit it alongside your code changes.
+2. Open a PR. CI (`.github/workflows/ci.yml`) runs `check`, `lint`, and `build` on every PR.
+3. On merge to `main`, `.github/workflows/release.yml` (via `changesets/action`) either opens
+   a "Version Packages" PR (bumping `package.json` and updating `CHANGELOG.md`) or, if that PR
+   was already merged, publishes the new version to npm as `@y-naaz/kit`.
+
+Publishing requires an `NPM_TOKEN` repo secret (an npm automation token with publish access to
+the `@y-naaz` scope).
 
 ## Contributing
 
