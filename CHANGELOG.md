@@ -1,5 +1,11 @@
 # @yasmee_ogo/kit
 
+## 0.1.3
+
+### Patch Changes
+
+- Strip TypeScript from published Svelte components. `vitePreprocess()` was not transforming `<script>` blocks, so `product-card.svelte` shipped with `import type` and type annotations intact, breaking consumers without a TS-aware Svelte preprocessor. The packaging step now also rewrites relative import extensions in `.svelte` files and removes the leftover `lang="ts"` attribute.
+
 ## 0.1.2
 
 ### Patch Changes
