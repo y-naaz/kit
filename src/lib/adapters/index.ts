@@ -28,7 +28,7 @@ export type VariantMapping = {
 export type ProductMapping = {
   id: Selector<string | number>;
   title: Selector<string>;
-  price: Selector<string | number>;
+  price?: Selector<string | number>;
   description?: Selector<string>;
   currency?: Selector<string>;
   availability?: Selector<boolean>;
@@ -212,11 +212,6 @@ export function createProductAdapter(mapping: ProductMapping): ProductAdapter {
 
     const variants = mapVariants(source, mapping.variants);
     const price = asText(read(source, mapping.price)) ?? variants.at(0)?.price ?? null;
-
-    if (price === null) {
-      return null;
-    }
-
     const availability = read(source, mapping.availability);
 
     return {

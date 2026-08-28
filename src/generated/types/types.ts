@@ -116,13 +116,13 @@ export type Product = {
    * @type { ProductImage[] }
    * @memberof Product
    */
-  images: ProductImage[];
+  images: ProductImage[] | null;
   /**
    * @description Product price
    * @type { string }
    * @memberof Product
    */
-  price: string;
+  price: string | null;
   /**
    * @description ISO currency code, e.g. USD
    * @type { string }
@@ -168,12 +168,7 @@ export function decodeProduct(rawInput: unknown): Product | null {
     const decodedVendor = decodeString(rawInput['vendor']);
     const decodedVariants = decodeArray(rawInput['variants'], decodeProductVariant);
 
-    if (
-      decodedId === null ||
-      decodedTitle === null ||
-      decodedImages === null ||
-      decodedPrice === null
-    ) {
+    if (decodedId === null || decodedTitle === null) {
       return null;
     }
 

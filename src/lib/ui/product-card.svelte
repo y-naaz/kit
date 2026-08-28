@@ -26,9 +26,11 @@
   const primaryImage = $derived(product.images?.at(0));
 
   const formattedPrice = $derived(
-    typeof product.currency === 'string' && product.currency.length > 0
-      ? `${product.currency} ${product.price}`
-      : `${product.price}`
+    typeof product.price !== 'string'
+      ? null
+      : typeof product.currency === 'string' && product.currency.length > 0
+        ? `${product.currency} ${product.price}`
+        : product.price
   );
 </script>
 
@@ -50,7 +52,9 @@
 
   <div class="product-card__body">
     <p class="product-card__title {titleClass}">{product.title}</p>
-    <p class="product-card__price {priceClass}">{formattedPrice}</p>
+    {#if formattedPrice !== null}
+      <p class="product-card__price {priceClass}">{formattedPrice}</p>
+    {/if}
     {#if showDescription && typeof product.description === 'string' && product.description.length > 0}
       <p class="product-card__description {descriptionClass}">{product.description}</p>
     {/if}

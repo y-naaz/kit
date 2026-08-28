@@ -42,8 +42,6 @@ types:
     required:
       - id
       - title
-      - images
-      - price
     properties:
       id:
         type: string
