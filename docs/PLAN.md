@@ -1,11 +1,12 @@
 # Product Card Library — Plan
 
-## Status: scaffolded
+## Status: published
 
-The repo is scaffolded and building/linting/type-checking cleanly. What's
-below reflects what's actually implemented, not just proposed.
+Published to npm as `@yasmee_ogo/kit`. What's below reflects what's actually
+implemented, not just proposed.
 
 ## Use case
+
 A standalone, reusable **Product Card** component library built in **Svelte**.
 Anyone who fetches product data from somewhere (Shopify, a custom backend, a
 CMS, etc.) can import this package into their own Svelte app, pass in their
@@ -13,6 +14,7 @@ product data, and customize the presentation (image size, text, layout) via
 props — without forking or editing the internal source.
 
 ## Scope boundaries
+
 - **This repo owns:** rendering/presentation of a product (image, title,
   price, description) and the props/config surface for customizing it.
 - **This repo does not own:** fetching data from Shopify or any other source,
@@ -20,6 +22,7 @@ props — without forking or editing the internal source.
   it in as a normalized object.
 
 ## Tech decisions (confirmed)
+
 - Framework: **Svelte 5** (runes mode), component library, not a full app.
 - Customization model: **props/config driven** — import the component,
   pass props like `imageSize`, `product`, etc. Source is not meant to be
@@ -31,8 +34,9 @@ props — without forking or editing the internal source.
   runtime decoders are generated from it via **type-crafter**
   ([github.com/sinha-sahil/type-crafter](https://github.com/sinha-sahil/type-crafter)) —
   the tool referred to earlier as "SourceCrafter" — into
-  `src/lib/generated/types/` (gitignored, regenerated via
-  `pnpm run generate:types`).
+  `src/generated/types/`, regenerated via `pnpm run generate:types`. The
+  generated `.ts` files are committed; only `.d.ts` build output is gitignored.
+  (`src/lib/generated/` exists only as a temporary copy during `pnpm package`.)
 - Coding style/tooling: matches the conventions used in this org's other
   Svelte packages (`BZ/forklift`, `BZ/kavach`, `BZ/nimble`) — pnpm, ESLint
   flat config + `typescript-eslint` + `eslint-plugin-svelte`, Prettier
@@ -42,6 +46,7 @@ props — without forking or editing the internal source.
   check → generate:types → format → lint → build.
 
 ## Repo structure (actual)
+
 ```
 kit/
 ├── package.json
@@ -58,16 +63,15 @@ kit/
 ├── schema/
 │   └── product.yaml               # source-of-truth type spec (type-crafter format)
 ├── src/
+│   ├── generated/                   # output of `pnpm run generate:types` (.ts committed)
+│   │   └── types/
 │   ├── lib/
 │   │   ├── ui/
 │   │   │   └── product-card.svelte # main exported component
-│   │   ├── generated/               # gitignored — output of `pnpm run generate:types`
-│   │   │   └── types/
 │   │   ├── types.ts                 # ProductCardProps (hand-written, wraps generated Product)
 │   │   └── index.ts                 # public exports
-│   └── demo/                        # local dev/demo app (not published)
-│       ├── App.svelte
-│       └── main.ts
+│   ├── App.svelte                   # local dev/demo app (not published)
+│   └── main.ts
 ├── index.html
 └── docs/
     └── PLAN.md
@@ -82,16 +86,16 @@ one platform), informed by comparing Shopify's Storefront API `Product`
 object, schema.org's `Product`/`Offer` types, and WooCommerce's product REST
 fields:
 
-| Field         | Shopify           | schema.org           | WooCommerce         |
-|---------------|--------------------|-----------------------|----------------------|
-| id            | `id` / `handle`    | —                     | `id`                 |
-| title         | `title`            | `name`                | `name`               |
-| description   | `description`      | `description`         | `description`        |
-| images        | `images`/`featuredImage` | `image`          | `images`             |
-| price/currency| `priceRange`, variant `price` | `offers.price`/`priceCurrency` | `price` |
-| availability  | `availableForSale` | `offers.availability` | `stock_status`       |
-| sku / vendor  | variant `sku`, `vendor` | `sku`, `brand`   | `sku`                |
-| variants      | `variants[]`        | —                     | `variations[]`       |
+| Field          | Shopify                       | schema.org                     | WooCommerce    |
+| -------------- | ----------------------------- | ------------------------------ | -------------- |
+| id             | `id` / `handle`               | —                              | `id`           |
+| title          | `title`                       | `name`                         | `name`         |
+| description    | `description`                 | `description`                  | `description`  |
+| images         | `images`/`featuredImage`      | `image`                        | `images`       |
+| price/currency | `priceRange`, variant `price` | `offers.price`/`priceCurrency` | `price`        |
+| availability   | `availableForSale`            | `offers.availability`          | `stock_status` |
+| sku / vendor   | variant `sku`, `vendor`       | `sku`, `brand`                 | `sku`          |
+| variants       | `variants[]`                  | —                              | `variations[]` |
 
 `schema/product.yaml` (type-crafter spec format — `info` + `types`, objects
 use `properties`/`required`, nullability is controlled solely by omission
@@ -144,19 +148,31 @@ map their platform's response into this shape before passing it to
 `ProductCard` — mapping is the consumer's responsibility, not this repo's.
 
 ### `ProductCard` props (`src/lib/types.ts`)
-| Prop           | Type                        | Default   | Purpose                        |
-|----------------|-----------------------------|-----------|---------------------------------|
-| `product`      | `Product`                   | required  | The product data to render      |
-| `imageSize`    | `'sm' \| 'md' \| 'lg' \| number` | `'md'` | Controls image dimensions       |
-| `showDescription` | `boolean`                | `true`    | Toggle description text         |
-| `titleClass` / `priceClass` / `descriptionClass` | `string` | — | Escape hatches for custom CSS classes |
-| `onSelect`     | `(product: Product) => void` | —        | Click handler for the card      |
+
+| Prop                                             | Type                             | Default      | Purpose                                 |
+| ------------------------------------------------ | -------------------------------- | ------------ | --------------------------------------- |
+| `product`                                        | `Product`                        | required     | The product data to render              |
+| `imageSize`                                      | `'sm' \| 'md' \| 'lg' \| number` | `'md'`       | Controls image dimensions               |
+| `orientation`                                    | `'vertical' \| 'horizontal'`     | `'vertical'` | Image above the details, or beside them |
+| `showDescription`                                | `boolean`                        | `true`       | Toggle description text                 |
+| `classes`                                        | `string`                         | `''`         | Custom classes on the card element      |
+| `titleClass` / `priceClass` / `descriptionClass` | `string`                         | —            | Escape hatches for custom CSS classes   |
+| `onSelect`                                       | `(product: Product) => void`     | —            | Click handler for the card              |
 
 Styling approach: sensible defaults via scoped CSS + CSS custom properties
-(e.g. `--card-radius`, `--card-gap`) so consumers can override via CSS
-variables in addition to prop-level overrides.
+(`--card-gap`, `--card-padding`, `--card-radius`, `--card-border-color`,
+`--card-background`, `--card-price-color`, `--card-description-color`,
+`--card-image-radius`, and `--card-width` for horizontal cards) so consumers
+can override via CSS variables in addition to prop-level overrides. See the
+README for the full table.
+
+Code style follows the shared guidelines used across the org's Svelte
+packages: explicit `typeof` narrowing over truthy coercion, `.at()` over
+numeric bracket indexing, no `auto` for layout properties, and a `classes`
+prop on every component.
 
 ## Build/publish (actual)
+
 - `pnpm run dev` — run the demo app (`src/demo`) against the live component.
 - `pnpm run build` — build the demo app (verification only).
 - `pnpm run package` — `svelte-package` output into `package/` (this is what
@@ -164,9 +180,18 @@ variables in addition to prop-level overrides.
   `package.json`).
 - `pnpm run check` / `pnpm run lint` / `pnpm run format` — verified clean.
 
-## Open questions for later (not blocking)
-- Publish target: private npm registry vs. public npm vs. just git-installable?
-- Versioning/changelog process (e.g. changesets)?
-- Do we need multiple card variants (grid card, list row, compact) from day one,
-  or just one card to start?
-- Component tests (e.g. `vitest` + `@testing-library/svelte`) — not yet added.
+## Settled since
+
+- **Publish target**: public npm, `@yasmee_ogo/kit`, `publishConfig.access: public`.
+- **Versioning/changelog**: changesets (`pnpm changeset` → `changeset version`).
+- **Card variants**: covered by `orientation` rather than separate components —
+  `horizontal` serves the list-row case.
+
+## Open questions (not blocking)
+
+- Component tests (e.g. `vitest` + `@testing-library/svelte`) — still not added.
+  This is the largest remaining gap for a package other people install.
+- Whether the generic adapter (`@yasmee_ogo/kit/adapters`) covers enough real
+  shapes, or whether documented mapping recipes per platform would help. Note
+  the deliberate choice not to ship per-platform modules: they would tie the
+  package's release cadence to APIs it does not control.

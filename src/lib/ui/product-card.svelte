@@ -4,7 +4,9 @@
   let {
     product,
     imageSize = 'md',
+    orientation = 'vertical',
     showDescription = true,
+    classes = '',
     titleClass = '',
     priceClass = '',
     descriptionClass = '',
@@ -21,15 +23,22 @@
     typeof imageSize === 'number' ? imageSize : sizePresets[imageSize]
   );
 
-  const primaryImage = $derived(product.images?.[0]);
+  const primaryImage = $derived(product.images?.at(0));
 
   const formattedPrice = $derived(
-    product.currency ? `${product.currency} ${product.price}` : `${product.price}`
+    typeof product.currency === 'string' && product.currency.length > 0
+      ? `${product.currency} ${product.price}`
+      : `${product.price}`
   );
 </script>
 
-<button class="product-card" type="button" onclick={() => onSelect?.(product)}>
-  {#if primaryImage}
+<button
+  class="product-card {classes}"
+  class:product-card--horizontal={orientation === 'horizontal'}
+  type="button"
+  onclick={() => onSelect?.(product)}
+>
+  {#if typeof primaryImage === 'object'}
     <img
       class="product-card__image"
       src={primaryImage.url}
@@ -42,7 +51,7 @@
   <div class="product-card__body">
     <p class="product-card__title {titleClass}">{product.title}</p>
     <p class="product-card__price {priceClass}">{formattedPrice}</p>
-    {#if showDescription && product.description}
+    {#if showDescription && typeof product.description === 'string' && product.description.length > 0}
       <p class="product-card__description {descriptionClass}">{product.description}</p>
     {/if}
   </div>
@@ -61,6 +70,21 @@
     cursor: pointer;
     font: inherit;
     color: inherit;
+  }
+
+  .product-card--horizontal {
+    flex-direction: row;
+    align-items: flex-start;
+    width: var(--card-width, fit-content);
+  }
+
+  .product-card--horizontal .product-card__image {
+    flex-shrink: 0;
+  }
+
+  .product-card--horizontal .product-card__body {
+    flex: 1;
+    min-width: 0;
   }
 
   .product-card__image {
