@@ -99,6 +99,28 @@ npm install @yasmee_ogo/kit
 <ProductCard {product} imageSize="lg" onSelect={(p) => console.log('selected', p)} />
 ```
 
+### Entry points
+
+The package root exports everything, including the Svelte component — so
+importing it requires Svelte-aware tooling (Vite, SvelteKit, `svelte-check`).
+
+The data layer is also published on its own subpaths, which are plain ESM and
+pull in no `.svelte` file. Use these to map or validate products anywhere the
+component is not being rendered: a server route, a background job, a test, or a
+non-Svelte app.
+
+| Import                     | Contains                                                                            | Needs Svelte tooling |
+| -------------------------- | ----------------------------------------------------------------------------------- | -------------------- |
+| `@yasmee_ogo/kit`          | everything below, plus `ProductCard`                                                | yes                  |
+| `@yasmee_ogo/kit/adapters` | `createProductAdapter`, `select`, mapping types                                     | no                   |
+| `@yasmee_ogo/kit/types`    | `Product`, `ProductImage`, `ProductVariant`, `decodeProduct` and the other decoders | no                   |
+
+```ts
+// A server route mapping and validating upstream data — no component involved.
+import { createProductAdapter, select } from '@yasmee_ogo/kit/adapters';
+import { decodeProduct } from '@yasmee_ogo/kit/types';
+```
+
 ### Adapters
 
 Kit renders products; it does not fetch or reshape them. A **`ProductAdapter`**

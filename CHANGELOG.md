@@ -1,5 +1,21 @@
 # @yasmee_ogo/kit
 
+## 0.5.0
+
+### Minor Changes
+
+- Publish the data layer on its own entry points, so mapping and validation no longer require Svelte-aware tooling.
+  
+  `exports` previously declared only `"."`. Because the root entry re-exports `ProductCard`, importing anything from the package pulled in a `.svelte` file — so `import { createProductAdapter } from '@yasmee_ogo/kit'` failed in plain Node with `ERR_UNKNOWN_FILE_EXTENSION`, and there was no subpath to reach the adapter directly. The mapping helpers and the generated decoders were effectively unusable outside a Svelte app, including from a test runner.
+  
+  Two subpaths now expose them, both plain ESM with no `.svelte` in their import graph:
+  
+  - `@yasmee_ogo/kit/adapters` — `createProductAdapter`, `select`, and the mapping types
+  - `@yasmee_ogo/kit/types` — `Product`, `ProductImage`, `ProductVariant`, and the `decodeProduct` family
+  
+  `./package.json` is exported as well, for tooling that reads it. The root entry is unchanged and still exports everything.
+- c8ca16e: `Product.images` and `Product.price` are now optional (only `id` and `title` are required). `ProductCard` renders without a price line when `price` is absent instead of showing "undefined", and `createProductAdapter` no longer drops products that have no price.
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@yasmee_ogo/kit",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -17,7 +17,16 @@
       "types": "./package/index.d.ts",
       "svelte": "./package/index.js",
       "default": "./package/index.js"
-    }
+    },
+    "./adapters": {
+      "types": "./package/adapters/index.d.ts",
+      "default": "./package/adapters/index.js"
+    },
+    "./types": {
+      "types": "./package/generated/types/index.d.ts",
+      "default": "./package/generated/types/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "package"
