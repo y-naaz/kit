@@ -32,14 +32,14 @@
         ? `${product.currency} ${product.price}`
         : product.price
   );
+
+  // Only render a button when there is something to activate. A card without
+  // `onSelect` is presentational, so making it focusable and announcing it as
+  // a button would be a lie to keyboard and screen-reader users.
+  const interactive = $derived(typeof onSelect === 'function');
 </script>
 
-<button
-  class="product-card {classes}"
-  class:product-card--horizontal={orientation === 'horizontal'}
-  type="button"
-  onclick={() => onSelect?.(product)}
->
+{#snippet content()}
   {#if typeof primaryImage === 'object'}
     <img
       class="product-card__image"
@@ -59,7 +59,22 @@
       <p class="product-card__description {descriptionClass}">{product.description}</p>
     {/if}
   </div>
-</button>
+{/snippet}
+
+{#if interactive}
+  <button
+    class="product-card {classes}"
+    class:product-card--horizontal={orientation === 'horizontal'}
+    type="button"
+    onclick={() => onSelect?.(product)}
+  >
+    {@render content()}
+  </button>
+{:else}
+  <div class="product-card {classes}" class:product-card--horizontal={orientation === 'horizontal'}>
+    {@render content()}
+  </div>
+{/if}
 
 <style>
   .product-card {
@@ -71,9 +86,12 @@
     border: 1px solid var(--card-border-color, #e2e2e2);
     background: var(--card-background, #fff);
     text-align: left;
-    cursor: pointer;
     font: inherit;
     color: inherit;
+  }
+
+  button.product-card {
+    cursor: pointer;
   }
 
   .product-card--horizontal {

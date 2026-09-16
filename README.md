@@ -2,10 +2,14 @@
 
 A framework-neutral-data, Svelte-rendered `ProductCard` component.
 
-![ProductCard rendered in a four-column grid and as two horizontal rows](docs/assets/product-card-preview.png)
+**[Live demo →](https://y-naaz.github.io/kit/)**
+
+![ProductCard rendered in a four-column grid and as two horizontal rows](https://raw.githubusercontent.com/y-naaz/kit/main/docs/assets/product-card-preview.png)
 
 Above: `imageSize="md"` cards in a grid, and `orientation="horizontal"` cards —
-the second restyled entirely through CSS custom properties.
+the second restyled entirely through CSS custom properties. The
+[demo site](https://y-naaz.github.io/kit/) shows both, plus a live panel mapping a
+raw Shopify Storefront response through `createProductAdapter`.
 
 ## What?
 
@@ -204,17 +208,27 @@ WooCommerce.
 
 ## Props
 
-| Prop               | Type                             | Default      | Purpose                                                                       |
-| ------------------ | -------------------------------- | ------------ | ----------------------------------------------------------------------------- |
-| `product`          | `Product`                        | **required** | The product data to render                                                    |
-| `imageSize`        | `'sm' \| 'md' \| 'lg' \| number` | `'md'`       | Image dimensions — `sm` 120px, `md` 200px, `lg` 320px; a number is used as-is |
-| `orientation`      | `'vertical' \| 'horizontal'`     | `'vertical'` | Stack the image above the details, or beside them                             |
-| `showDescription`  | `boolean`                        | `true`       | Render the description when the product has one                               |
-| `classes`          | `string`                         | `''`         | Custom classes on the card element itself                                     |
-| `titleClass`       | `string`                         | `''`         | Custom classes on the title                                                   |
-| `priceClass`       | `string`                         | `''`         | Custom classes on the price                                                   |
-| `descriptionClass` | `string`                         | `''`         | Custom classes on the description                                             |
-| `onSelect`         | `(product: Product) => void`     | —            | Called when the card is clicked                                               |
+| Prop               | Type                             | Default      | Purpose                                                                        |
+| ------------------ | -------------------------------- | ------------ | ------------------------------------------------------------------------------ |
+| `product`          | `Product`                        | **required** | The product data to render                                                     |
+| `imageSize`        | `'sm' \| 'md' \| 'lg' \| number` | `'md'`       | Image dimensions — `sm` 120px, `md` 200px, `lg` 320px; a number is used as-is  |
+| `orientation`      | `'vertical' \| 'horizontal'`     | `'vertical'` | Stack the image above the details, or beside them                              |
+| `showDescription`  | `boolean`                        | `true`       | Render the description when the product has one                                |
+| `classes`          | `string`                         | `''`         | Custom classes on the card element itself                                      |
+| `titleClass`       | `string`                         | `''`         | Custom classes on the title                                                    |
+| `priceClass`       | `string`                         | `''`         | Custom classes on the price                                                    |
+| `descriptionClass` | `string`                         | `''`         | Custom classes on the description                                              |
+| `onSelect`         | `(product: Product) => void`     | —            | Called when the card is clicked. Also decides the rendered element — see below |
+
+### Interactivity
+
+The card renders as a `<button>` only when `onSelect` is supplied. Without it the card
+is presentational and renders as a `<div>` — not focusable, not announced as a button,
+no pointer cursor. A card that looks clickable but does nothing is a bug for keyboard
+and screen-reader users, so the element follows the behaviour rather than the styling.
+
+If you style the card by element rather than by class, target `.product-card` (present
+on both) instead of `button`.
 
 ### Layout
 
